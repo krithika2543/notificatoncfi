@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Notification System</title>
+    
+    <style>
+        #notification-container {
+            background-color: white;
+            position: fixed;
+            top: 20px;
+            z-index: 999;
+        }
+        .notification {
+            background-color: rgba(208, 213, 255, 0.322);
+            color: rgb(1, 9, 83);
+            border-radius: 8px;
+            padding:5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); 
+            margin-bottom: 12px;
+            font-size:small;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            z-index: 1;
+        }
+        .toggle {
+            display: inline-block;
+            border-radius: 50px;
+            padding: 0;
+            background: transparent;
+            border: none;
+            overflow: hidden;
+            height: 50px;
+            position: fixed;
+            top: 10px;
+            right:10px;
+            background-color: black;
+        }
+
+        .toggle img {
+            display: block;
+            width: 100%;
+            height: 50px;
+            opacity: 1;
+        }
+
+        .toggle:hover {
+            box-shadow: 5px 5px 10px rgba(0,0,0,0.15);
+            cursor: pointer;
+        }
+
+        .toggle:active {
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+    <button class="toggle"> <img src="https://web-dev.imgix.net/image/vS06HQ1YTsbMKSFTIPl2iogUQP73/Lswkub5NhuBJ016OeSO1.png?auto=format" height="50"></button>
+    <audio id="notification-sound">
+        <source src="rickroll.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="notification-container"></div>
+
+    <script>
+
+        const notificationContainer = document.getElementById('notification-container');
+
+        function fetchJoke() {
+            fetch('https://official-joke-api.appspot.com/random_joke')
+                .then(response => response.json())
+                .then(data => {
+                    const setup = data.setup;
+                    const punchline = data.punchline;
+                    const notificationSound = document.getElementById('notification-sound');
+                   
+                    // Create the notification element
+                    const notification = document.createElement('div');
+                    notification.classList.add('notification');
+                    notification.innerHTML = `
+                        <h3>${setup}</h3>
+                        <p>${punchline}</p>
+                    `;
+                    
+                    // Add the notification to the container
+                    notificationContainer.appendChild(notification);
+                    
+                    // Play notification sound
+                    notificationSound.play();
+                })
+                .catch(error => {
+                    console.log('Error:', error);
+                });
+        }
+
+        // Fetch a joke periodically (e.g., every 10 seconds)
+        setInterval(fetchJoke, 10000);
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            var button = document.querySelector('.toggle');
+            var body = document.querySelector('body');
+
+            button.addEventListener('click', function() {
+                if (body.style.backgroundColor === 'rgb(255, 255, 255)') 
+                {
+                    body.style.backgroundColor = 'rgb(26, 15, 24)';
+                    notificationContainer.style.backgroundColor='rgb(26, 15, 24)';
+                    const notifications = document.querySelectorAll('.notification');
+                    notifications.forEach(function(notification) {
+                             notification.style.backgroundColor = 'rgb(230, 188, 205)';
+                             notification.style.color='rgb(91, 2, 74)';
+                            });
+                    
+                    // Change to default background color
+                } 
+                else {
+
+                    body.style.backgroundColor = 'rgb(255,255,255)';
+                    notificationContainer.style.backgroundColor = 'rgb(255,255,255)';
+                    const notifications = document.querySelectorAll('.notification');
+                    notifications.forEach(function(notification) {
+                        notification.style.backgroundColor = 'rgba(208, 213, 255, 0.322)';
+                        notification.style.color='rgb(1, 9, 83)';
+                    // Change to white color
+                });
+            }
+        });
+    });
+
+    </script>
+</body>
+</html>
